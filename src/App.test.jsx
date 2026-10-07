@@ -65,4 +65,12 @@ describe('App', () => {
     expect(screen.getByText(/Total: 2/)).toBeInTheDocument()
     expect(screen.getByText(/Active: 2/)).toBeInTheDocument()
   })
+
+  it('gives each control an accessible name', () => {
+    render(<App />)
+    fireEvent.change(screen.getByRole('textbox', { name: 'New todo' }), { target: { value: 'Buy milk' } })
+    fireEvent.click(screen.getByText('Add'))
+    expect(screen.getByRole('checkbox', { name: 'Complete "Buy milk"' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Delete "Buy milk"' })).toBeInTheDocument()
+  })
 })
