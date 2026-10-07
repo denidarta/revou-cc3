@@ -102,3 +102,13 @@ button:hover {
   color: #666;
   font-size: 14px;
 }
+
+.filters {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.filters button.active {
+  background: #28a745;
+}
