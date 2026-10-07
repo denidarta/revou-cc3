@@ -1,5 +1,4 @@
-# My Todo List — Refactor Notes (Explained Like You're Five)
-
+# My Todo List — Refactor Notes
 This is a small to-do list app built with React. You type a thing you need to do, press **Add**, and it shows up in a list. You can tick it off, delete it, and filter the list by "All", "Active", or "Completed".
 
 The app came from [supportrevou/technical-test-3](https://github.com/supportrevou/technical-test-3). It worked, but it had hidden problems. The task was to find those problems and fix them without adding new features or rewriting everything.
