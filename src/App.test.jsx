@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import App from './App'
 
@@ -64,5 +64,24 @@ describe('App', () => {
     
     expect(screen.getByText(/Total: 2/)).toBeInTheDocument()
     expect(screen.getByText(/Active: 2/)).toBeInTheDocument()
+  })
+
+  it('adds a todo when the form is submitted', () => {
+    render(<App />)
+    const input = screen.getByPlaceholderText('What needs to be done?')
+    fireEvent.change(input, { target: { value: 'Via Enter' } })
+    fireEvent.submit(input.closest('form'))
+    expect(screen.getByText('Via Enter')).toBeInTheDocument()
+  })
+
+  it('alerts and adds nothing on blank submit', () => {
+    const alert = vi.spyOn(window, 'alert').mockImplementation(() => {})
+    render(<App />)
+    const input = screen.getByPlaceholderText('What needs to be done?')
+    fireEvent.change(input, { target: { value: '   ' } })
+    fireEvent.submit(input.closest('form'))
+    expect(alert).toHaveBeenCalledWith('Please enter a todo')
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
+    vi.restoreAllMocks()
   })
 })
