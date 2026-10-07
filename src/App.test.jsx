@@ -129,4 +129,23 @@ describe('App', () => {
     expect(screen.getByRole('checkbox', { name: 'Complete "Buy milk"' })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Delete "Buy milk"' })).toBeInTheDocument()
   })
+
+  it('adds a todo when the form is submitted', () => {
+    render(<App />)
+    const input = screen.getByPlaceholderText('What needs to be done?')
+    fireEvent.change(input, { target: { value: 'Via Enter' } })
+    fireEvent.submit(input.closest('form'))
+    expect(screen.getByText('Via Enter')).toBeInTheDocument()
+  })
+
+  it('alerts and adds nothing on blank submit', () => {
+    const alert = vi.spyOn(window, 'alert').mockImplementation(() => {})
+    render(<App />)
+    const input = screen.getByPlaceholderText('What needs to be done?')
+    fireEvent.change(input, { target: { value: '   ' } })
+    fireEvent.submit(input.closest('form'))
+    expect(alert).toHaveBeenCalledWith('Please enter a todo')
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
+    vi.restoreAllMocks()
+  })
 })

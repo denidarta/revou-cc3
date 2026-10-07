@@ -67,21 +67,16 @@ function App() {
     <div className="app">
       <h1>My Todo List</h1>
       
-      <div className="input-section">
+      <form className="input-section" onSubmit={e => { e.preventDefault(); addTodo() }}>
         <input 
           type="text"
           aria-label="New todo"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              addTodo()
-            }
-          }}
           placeholder="What needs to be done?"
         />
-        <button onClick={addTodo}>Add</button>
-      </div>
+        <button type="submit">Add</button>
+      </form>
       
       {/* Issue 12: Inline styles (inconsistent dengan CSS file) */}
       <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
