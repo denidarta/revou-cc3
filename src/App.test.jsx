@@ -65,4 +65,17 @@ describe('App', () => {
     expect(screen.getByText(/Total: 2/)).toBeInTheDocument()
     expect(screen.getByText(/Active: 2/)).toBeInTheDocument()
   })
+
+  it.each(['{not json', 'null', '{}', '[null]'])('starts empty when stored todos are %s', (stored) => {
+    localStorage.setItem('todos', stored)
+    render(<App />)
+    expect(screen.getByText('My Todo List')).toBeInTheDocument()
+    expect(screen.queryAllByRole('checkbox')).toHaveLength(0)
+  })
+
+  it('shows saved todos on load', () => {
+    localStorage.setItem('todos', JSON.stringify([{ id: 1, text: 'Saved', completed: false }]))
+    render(<App />)
+    expect(screen.getByText('Saved')).toBeInTheDocument()
+  })
 })
