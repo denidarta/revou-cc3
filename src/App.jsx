@@ -67,10 +67,10 @@ function App() {
     <div className="app">
       <h1>My Todo List</h1>
       
-      {/* Issue 11: Tidak ada label untuk accessibility */}
       <div className="input-section">
         <input 
           type="text"
+          aria-label="New todo"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={(e) => {
@@ -114,11 +114,13 @@ function App() {
               type="checkbox"
               checked={todo.completed}
               onChange={() => toggleTodo(todo.id)}
+              aria-label={`Complete "${todo.text}"`}
             />
             <span>{todo.text}</span>
             <button 
               className="delete-btn"
               onClick={() => deleteTodo(todo.id)}
+              aria-label={`Delete "${todo.text}"`}
             >
               Delete
             </button>
