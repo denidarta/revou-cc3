@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import App from './App'
 
@@ -73,5 +73,17 @@ describe('App', () => {
     fireEvent.click(screen.getByText('Add'))
     expect(screen.getByText(markup)).toBeInTheDocument()
     expect(document.querySelector('.todo-item img')).toBeNull()
+  })
+
+  it('writes todos to localStorage only when todos change', () => {
+    render(<App />)
+    const setItem = vi.spyOn(Storage.prototype, 'setItem')
+    const input = screen.getByPlaceholderText('What needs to be done?')
+    fireEvent.change(input, { target: { value: 'Persist me' } })
+    expect(setItem).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByText('Add'))
+    expect(setItem).toHaveBeenCalledTimes(1)
+    expect(JSON.parse(localStorage.getItem('todos'))[0].text).toBe('Persist me')
+    setItem.mockRestore()
   })
 })
