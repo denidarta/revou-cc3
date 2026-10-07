@@ -99,4 +99,26 @@ describe('App', () => {
     render(<App />)
     expect(screen.getByText('Saved')).toBeInTheDocument()
   })
+
+  it('keeps todos added in the same millisecond distinct', () => {
+    vi.spyOn(Date, 'now').mockReturnValue(1)
+    render(<App />)
+    const input = screen.getByPlaceholderText('What needs to be done?')
+    fireEvent.change(input, { target: { value: 'A' } })
+    fireEvent.click(screen.getByText('Add'))
+    fireEvent.change(input, { target: { value: 'B' } })
+    fireEvent.click(screen.getByText('Add'))
+    const [first, second] = screen.getAllByRole('checkbox')
+    fireEvent.click(first)
+    expect(first).toBeChecked()
+    expect(second).not.toBeChecked()
+    vi.restoreAllMocks()
+  })
+
+  it('does not store createdAt', () => {
+    render(<App />)
+    fireEvent.change(screen.getByPlaceholderText('What needs to be done?'), { target: { value: 'A' } })
+    fireEvent.click(screen.getByText('Add'))
+    expect(JSON.parse(localStorage.getItem('todos'))[0]).not.toHaveProperty('createdAt')
+  })
 })
