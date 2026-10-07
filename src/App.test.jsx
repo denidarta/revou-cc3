@@ -2,6 +2,11 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, fireEvent } from '@testing-library/react'
 import App from './App'
 
+const add = (text) => {
+  fireEvent.change(screen.getByPlaceholderText('What needs to be done?'), { target: { value: text } })
+  fireEvent.click(screen.getByText('Add'))
+}
+
 describe('App', () => {
   beforeEach(() => {
     localStorage.clear()
@@ -14,22 +19,14 @@ describe('App', () => {
   
   it('can add a new todo', () => {
     render(<App />)
-    const input = screen.getByPlaceholderText('What needs to be done?')
-    const addButton = screen.getByText('Add')
-    
-    fireEvent.change(input, { target: { value: 'Test todo' } })
-    fireEvent.click(addButton)
+    add('Test todo')
     
     expect(screen.getByText('Test todo')).toBeInTheDocument()
   })
   
   it('can toggle todo completion', () => {
     render(<App />)
-    const input = screen.getByPlaceholderText('What needs to be done?')
-    const addButton = screen.getByText('Add')
-    
-    fireEvent.change(input, { target: { value: 'Test todo' } })
-    fireEvent.click(addButton)
+    add('Test todo')
     
     const checkbox = screen.getByRole('checkbox')
     fireEvent.click(checkbox)
@@ -39,11 +36,7 @@ describe('App', () => {
   
   it('can delete a todo', () => {
     render(<App />)
-    const input = screen.getByPlaceholderText('What needs to be done?')
-    const addButton = screen.getByText('Add')
-    
-    fireEvent.change(input, { target: { value: 'Test todo' } })
-    fireEvent.click(addButton)
+    add('Test todo')
     
     const deleteButton = screen.getByText('Delete')
     fireEvent.click(deleteButton)
@@ -53,14 +46,8 @@ describe('App', () => {
   
   it('shows correct stats', () => {
     render(<App />)
-    const input = screen.getByPlaceholderText('What needs to be done?')
-    const addButton = screen.getByText('Add')
-    
-    fireEvent.change(input, { target: { value: 'Todo 1' } })
-    fireEvent.click(addButton)
-    
-    fireEvent.change(input, { target: { value: 'Todo 2' } })
-    fireEvent.click(addButton)
+    add('Todo 1')
+    add('Todo 2')
     
     expect(screen.getByText(/Total: 2/)).toBeInTheDocument()
     expect(screen.getByText(/Active: 2/)).toBeInTheDocument()
