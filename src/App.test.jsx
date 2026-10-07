@@ -65,4 +65,15 @@ describe('App', () => {
     expect(screen.getByText(/Total: 2/)).toBeInTheDocument()
     expect(screen.getByText(/Active: 2/)).toBeInTheDocument()
   })
+
+  it('marks the active filter with aria-pressed', () => {
+    render(<App />)
+    const all = screen.getByRole('button', { name: 'All' })
+    const active = screen.getByRole('button', { name: 'Active' })
+    expect(all).toHaveAttribute('aria-pressed', 'true')
+    expect(active).toHaveAttribute('aria-pressed', 'false')
+    fireEvent.click(active)
+    expect(active).toHaveAttribute('aria-pressed', 'true')
+    expect(all).toHaveAttribute('aria-pressed', 'false')
+  })
 })

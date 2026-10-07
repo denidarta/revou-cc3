@@ -68,7 +68,6 @@ function App() {
     active: todos.filter(t => !t.completed).length
   }
   
-  // Issue 10: Inline event handler dengan arrow function (re-create setiap render)
   return (
     <div className="app">
       <h1>My Todo List</h1>
@@ -89,26 +88,18 @@ function App() {
         <button onClick={addTodo}>Add</button>
       </div>
       
-      {/* Issue 12: Inline styles (inconsistent dengan CSS file) */}
-      <div style={{ marginBottom: '20px', display: 'flex', gap: '10px' }}>
-        <button 
-          onClick={() => setFilter('all')}
-          style={{ background: filter === 'all' ? '#28a745' : '#007bff' }}
-        >
-          All
-        </button>
-        <button 
-          onClick={() => setFilter('active')}
-          style={{ background: filter === 'active' ? '#28a745' : '#007bff' }}
-        >
-          Active
-        </button>
-        <button 
-          onClick={() => setFilter('completed')}
-          style={{ background: filter === 'completed' ? '#28a745' : '#007bff' }}
-        >
-          Completed
-        </button>
+      <div className="filters">
+        {['all', 'active', 'completed'].map(f => (
+          <button
+            key={f}
+            type="button"
+            className={filter === f ? 'active' : undefined}
+            aria-pressed={filter === f}
+            onClick={() => setFilter(f)}
+          >
+            {f[0].toUpperCase() + f.slice(1)}
+          </button>
+        ))}
       </div>
       
       <div className="todo-list">
