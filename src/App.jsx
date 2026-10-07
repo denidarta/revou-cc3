@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 function App() {
   const [todos, setTodos] = useState(() => {
@@ -16,7 +16,6 @@ function App() {
     localStorage.setItem('todos', JSON.stringify(todos))
   }, [todos])
   
-  // Issue 5: Function yang tidak di-memoize, re-create setiap render
   const addTodo = () => {
     if (input.trim() === '') {
       alert('Please enter a todo')
@@ -44,23 +43,12 @@ function App() {
     ))
   }
   
-  // Issue 8: Logic filtering yang bisa dipindah ke useMemo
-  const getFilteredTodos = () => {
-    if (filter === 'active') {
-      return todos.filter(todo => !todo.completed)
-    }
-    if (filter === 'completed') {
-      return todos.filter(todo => todo.completed)
-    }
-    return todos
-  }
+  const visibleTodos = useMemo(
+    () => filter === 'all' ? todos : todos.filter(t => Boolean(t.completed) === (filter === 'completed')),
+    [todos, filter]
+  )
   
-  // Issue 9: Calculation yang tidak perlu di setiap render
-  const stats = {
-    total: todos.length,
-    completed: todos.filter(t => t.completed).length,
-    active: todos.filter(t => !t.completed).length
-  }
+  const completedCount = useMemo(() => todos.filter(t => t.completed).length, [todos])
   
   // Issue 10: Inline event handler dengan arrow function (re-create setiap render)
   return (
@@ -102,7 +90,7 @@ function App() {
       
       <div className="todo-list">
         {/* Issue 13: Tidak ada handling untuk empty state */}
-        {getFilteredTodos().map((todo) => (
+        {visibleTodos.map((todo) => (
           // Issue 14: Key menggunakan index bisa lebih baik dengan ID
           <div key={todo.id} className={`todo-item ${todo.completed ? 'completed' : ''}`}>
             <input 
@@ -124,7 +112,7 @@ function App() {
       </div>
       
       <div className="stats">
-        <p>Total: {stats.total} | Active: {stats.active} | Completed: {stats.completed}</p>
+        <p>Total: {todos.length} | Active: {todos.length - completedCount} | Completed: {completedCount}</p>
       </div>
     </div>
   )
