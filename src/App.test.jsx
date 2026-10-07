@@ -65,4 +65,13 @@ describe('App', () => {
     expect(screen.getByText(/Total: 2/)).toBeInTheDocument()
     expect(screen.getByText(/Active: 2/)).toBeInTheDocument()
   })
+
+  it('renders todo text as literal text, not HTML', () => {
+    render(<App />)
+    const markup = '<img src=x onerror=alert(1)>'
+    fireEvent.change(screen.getByPlaceholderText('What needs to be done?'), { target: { value: markup } })
+    fireEvent.click(screen.getByText('Add'))
+    expect(screen.getByText(markup)).toBeInTheDocument()
+    expect(document.querySelector('.todo-item img')).toBeNull()
+  })
 })
